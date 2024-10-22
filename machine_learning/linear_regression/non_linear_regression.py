@@ -1,0 +1,46 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from linear_regression import LinearRegression
+
+data = pd.read_csv('../data/non-linear-regression-x-y.csv')
+
+x = data['x'].values.reshape(-1, 1)
+y = data['y'].values.reshape(-1, 1)
+
+data.head(10)
+
+plt.plot(x, y)
+plt.show()
+
+num_iterations = 500
+learning_rate = 0.02
+polynomial_degree = 15
+sinusoid_degree = 15
+normalize_data = True
+
+linear_regression = LinearRegression(x, y, polynomial_degree, sinusoid_degree, normalize_data)
+(theta, cost_history) = linear_regression.train(learning_rate, num_iterations)
+
+print('Initial cost:', cost_history[0])
+print('Final cost:', cost_history[-1])
+
+theta_table = pd.DataFrame({'Model Parameters': theta.flatten()})
+
+plt.plot(range(num_iterations), cost_history)
+plt.title('Gradient Descent')
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.show()
+
+predictions_num = 1000
+x_predictions = np.linspace(min(x), max(x), predictions_num).reshape(predictions_num, 1)
+y_predictions = linear_regression.predict(x_predictions)
+
+print('Theta values:', theta)
+print('Predictions:', y_predictions[:10])
+
+plt.scatter(x, y, label='Train data')
+plt.plot(x_predictions, y_predictions, 'r', label='Predictions')
+plt.legend(loc='best')
+plt.show()
